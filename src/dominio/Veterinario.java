@@ -1,6 +1,5 @@
 package dominio;
 
-
 import java.io.Serializable;
 
 public class Veterinario implements Serializable {

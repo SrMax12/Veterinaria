@@ -7,10 +7,16 @@ import java.sql.Statement;
  * sobre la tabla duenos y muestra los registros encontrados.
  *
  * Compilar (desde la raiz del proyecto):
- *   javac -encoding UTF-8 -cp "Servidor\lib\mysql-connector-j-8.0.33.jar" -d bin Dominio\App.java Dominio\Consulta.java Dominio\Dueño.java Dominio\Mascota.java Dominio\Vacuna.java Dominio\Veterinario.java Servidor\conexion\ConexionBD.java Servidor\dao\ConsultaDAO.java Servidor\dao\DuenoDAO.java Servidor\dao\MascotaDAO.java Servidor\dao\VacunaDAO.java Servidor\dao\VeterinarioDAO.java PruebaConexion.java
+ * javac -encoding UTF-8 -cp "Servidor\lib\mysql-connector-j-8.0.33.jar" -d bin
+ * Dominio\App.java Dominio\Consulta.java Dominio\Dueño.java
+ * Dominio\Mascota.java Dominio\Vacuna.java Dominio\Veterinario.java
+ * Servidor\conexion\ConexionBD.java Servidor\dao\ConsultaDAO.java
+ * Servidor\dao\DuenoDAO.java Servidor\dao\MascotaDAO.java
+ * Servidor\dao\VacunaDAO.java Servidor\dao\VeterinarioDAO.java
+ * PruebaConexion.java
  *
  * Ejecutar:
- *   java -cp "bin;Servidor\lib\mysql-connector-j-8.0.33.jar" PruebaConexion
+ * java -cp "bin;Servidor\lib\mysql-connector-j-8.0.33.jar" PruebaConexion
  *
  * Requisitos: MySQL (XAMPP) iniciado y veterinaria_db.sql importado.
  */
@@ -28,8 +34,8 @@ public class PruebaConexion {
 
         // try-with-resources: cierra solo la conexion, el Statement y el ResultSet
         try (Connection cn = obtenerConexion();
-             Statement st = cn.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
+                Statement st = cn.createStatement();
+                ResultSet rs = st.executeQuery(sql)) {
 
             System.out.println("Conexion OK a veterinaria_db\n");
             System.out.println("Registros en la tabla duenos:\n");
