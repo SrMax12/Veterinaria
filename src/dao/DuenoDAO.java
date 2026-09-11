@@ -1,14 +1,14 @@
 package dao;
 
 import conexion.ConexionBD;
-import dominio.Dueño;
+import dominio.Dueno;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DuenoDAO {
-    public int guardar(Dueño d) throws SQLException {
-        String sql = "INSERT INTO duenos (nombre, ci, telefono, email) VALUES (?, ?, ?, ?)";
+    public int guardar(Dueno d) throws SQLException {
+        String sql = "INSERT INTO dueño (nombre, ci, telefono, email) VALUES (?, ?, ?, ?)";
         try (Connection cn = ConexionBD.obtenerConexion();
                 PreparedStatement ps = cn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, d.getNombre());
@@ -26,14 +26,14 @@ public class DuenoDAO {
         }
     }
 
-    public List<Dueño> listar() throws SQLException {
-        String sql = "SELECT id, nombre, ci, telefono, email FROM duenos";
-        List<Dueño> lista = new ArrayList<>();
+    public List<Dueno> listar() throws SQLException {
+        String sql = "SELECT id, nombre, ci, telefono, email FROM dueño";
+        List<Dueno> lista = new ArrayList<>();
         try (Connection cn = ConexionBD.obtenerConexion();
                 PreparedStatement ps = cn.prepareStatement(sql);
                 ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                lista.add(new Dueño(
+                lista.add(new Dueno(
                         rs.getInt("id"),
                         rs.getString("nombre"),
                         rs.getString("ci"),
@@ -44,8 +44,8 @@ public class DuenoDAO {
         return lista;
     }
 
-    public boolean actualizar(Dueño d) throws SQLException {
-        String sql = "UPDATE duenos SET nombre = ?, ci = ?, telefono = ?, email = ? WHERE id = ?";
+    public boolean actualizar(Dueno d) throws SQLException {
+        String sql = "UPDATE dueño SET nombre = ?, ci = ?, telefono = ?, email = ? WHERE id = ?";
         try (Connection cn = ConexionBD.obtenerConexion();
                 PreparedStatement ps = cn.prepareStatement(sql)) {
             ps.setString(1, d.getNombre());
@@ -58,7 +58,7 @@ public class DuenoDAO {
     }
 
     public boolean eliminar(int id) throws SQLException {
-        String sql = "DELETE FROM duenos WHERE id = ?";
+        String sql = "DELETE FROM dueño WHERE id = ?";
         try (Connection cn = ConexionBD.obtenerConexion();
                 PreparedStatement ps = cn.prepareStatement(sql)) {
             ps.setInt(1, id);

@@ -1,0 +1,21 @@
+=== INTEGRACIÓN DE VISTAS CON PERSISTENCIA SQL (PATRÓN DAO) ===
+Actúa como un desarrollador experto en Java Swing y base de datos. Acabo de pegar el código de mi formulario secundario exportado de JFrameBuilder. Este componente hereda de 'JPanel' y su objetivo principal es interactuar de forma directa con la base de datos MySQL a través de su clase DAO.
+
+Por favor, añade toda la lógica de negocio y persistencia en los bloques de usuario correspondientes siguiendo estas directivas estrictas:
+
+1. Instanciación y Carga Inicial:
+   - Declara e inicializa la clase DAO correspondiente como un atributo privado de este formulario (ej: 'private MascotaDAO dao = new MascotaDAO();').
+   - Implementa un método llamado 'private void cargarDatos()'. Este debe limpiar el JTable ('modeloTabla.setRowCount(0)'), invoca al método '.listar()' del DAO para obtener un ArrayList, y recorre la colección agregando los registros fila por fila en la tabla. Llama a este método al final del constructor.
+
+2. Acción del Botón Guardar / Registrar:
+   - En el ActionListener del botón de guardado, aplica validación estricta de vacíos mediante '.trim().isEmpty()'.
+   - Abre un bloque try-catch seguro para capturar 'NumberFormatException' (para evitar textos en campos de números) y 'SQLException'.
+   - Dentro del bloque try, instancia el objeto del Dominio (ej: Mascota) pasando el ID como 0 (ya que en SQL es AUTO_INCREMENT) junto con el resto de datos de las cajas de texto mapeadas.
+   - Invoca al método '.guardar(objeto)' del DAO. Al finalizar con éxito, muestra un mensaje de confirmación, limpia las cajas de texto y vuelve a llamar a 'cargarDatos()'.
+
+3. Acción del Botón Eliminar:
+   - En el ActionListener del botón de eliminación, lee el ID desde su respectiva caja de texto o desde la fila seleccionada de la JTable.
+   - Solicita una confirmación explícita mediante 'JOptionPane.showConfirmDialog' (YES_NO_OPTION).
+   - Si confirma, encapsula el proceso en un try-catch e invoca al método '.eliminar(id)' del DAO. Al terminar, notifica el resultado y refresca la tabla visual.
+
+Revisa los nombres de las variables del formulario exportado para que coincidan de forma exacta con los componentes del archivo y maneja de forma segura todas las excepciones de SQL sin generar errores en consola.

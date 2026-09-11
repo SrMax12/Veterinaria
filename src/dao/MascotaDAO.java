@@ -8,7 +8,7 @@ import java.util.List;
 
 public class MascotaDAO {
     public int guardar(Mascota m) throws SQLException {
-        String sql = "INSERT INTO mascotas (nombre, edad, especie, raza, peso, genero) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO mascota (nombre, edad, especie, raza, peso, genero) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection cn = ConexionBD.obtenerConexion();
                 PreparedStatement ps = cn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, m.getNombre());
@@ -29,7 +29,7 @@ public class MascotaDAO {
     }
 
     public List<Mascota> listar() throws SQLException {
-        String sql = "SELECT id, nombre, edad, especie, raza, peso, genero FROM mascotas";
+        String sql = "SELECT id, nombre, edad, especie, raza, peso, genero FROM mascota";
         List<Mascota> lista = new ArrayList<>();
         try (Connection cn = ConexionBD.obtenerConexion();
                 PreparedStatement ps = cn.prepareStatement(sql);
@@ -49,7 +49,7 @@ public class MascotaDAO {
     }
 
     public boolean actualizar(Mascota m) throws SQLException {
-        String sql = "UPDATE mascotas SET nombre = ?, edad = ?, especie = ?, raza = ?, peso = ?, genero = ? WHERE id = ?";
+        String sql = "UPDATE mascota SET nombre = ?, edad = ?, especie = ?, raza = ?, peso = ?, genero = ? WHERE id = ?";
         try (Connection cn = ConexionBD.obtenerConexion();
                 PreparedStatement ps = cn.prepareStatement(sql)) {
             ps.setString(1, m.getNombre());
@@ -64,7 +64,7 @@ public class MascotaDAO {
     }
 
     public boolean eliminar(int id) throws SQLException {
-        String sql = "DELETE FROM mascotas WHERE id = ?";
+        String sql = "DELETE FROM mascota WHERE id = ?";
         try (Connection cn = ConexionBD.obtenerConexion();
                 PreparedStatement ps = cn.prepareStatement(sql)) {
             ps.setInt(1, id);

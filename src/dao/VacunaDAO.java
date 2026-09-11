@@ -8,7 +8,7 @@ import java.util.List;
 
 public class VacunaDAO {
     public int guardar(Vacuna v) throws SQLException {
-        String sql = "INSERT INTO vacunas (tipo, fecha_hora, vencimiento) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO vacuna (tipo, fecha_hora, vencimiento) VALUES (?, ?, ?)";
         try (Connection cn = ConexionBD.obtenerConexion();
                 PreparedStatement ps = cn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, v.getTipo());
@@ -26,7 +26,7 @@ public class VacunaDAO {
     }
 
     public List<Vacuna> listar() throws SQLException {
-        String sql = "SELECT id, tipo, fecha_hora, vencimiento FROM vacunas";
+        String sql = "SELECT id, tipo, fecha_hora, vencimiento FROM vacuna";
         List<Vacuna> lista = new ArrayList<>();
         try (Connection cn = ConexionBD.obtenerConexion();
                 PreparedStatement ps = cn.prepareStatement(sql);
@@ -43,7 +43,7 @@ public class VacunaDAO {
     }
 
     public boolean actualizar(Vacuna v) throws SQLException {
-        String sql = "UPDATE vacunas SET tipo = ?, fecha_hora = ?, vencimiento = ? WHERE id = ?";
+        String sql = "UPDATE vacuna SET tipo = ?, fecha_hora = ?, vencimiento = ? WHERE id = ?";
         try (Connection cn = ConexionBD.obtenerConexion();
                 PreparedStatement ps = cn.prepareStatement(sql)) {
             ps.setString(1, v.getTipo());
@@ -55,7 +55,7 @@ public class VacunaDAO {
     }
 
     public boolean eliminar(int id) throws SQLException {
-        String sql = "DELETE FROM vacunas WHERE id = ?";
+        String sql = "DELETE FROM vacuna WHERE id = ?";
         try (Connection cn = ConexionBD.obtenerConexion();
                 PreparedStatement ps = cn.prepareStatement(sql)) {
             ps.setInt(1, id);

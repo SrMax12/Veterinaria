@@ -8,7 +8,7 @@ import java.util.List;
 
 public class VeterinarioDAO {
     public int guardar(Veterinario v) throws SQLException {
-        String sql = "INSERT INTO veterinarios (nombre, password, especialidad) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO veterinario (nombre, password, especialidad) VALUES (?, ?, ?)";
         try (Connection cn = ConexionBD.obtenerConexion();
                 PreparedStatement ps = cn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, v.getNombre());
@@ -26,7 +26,7 @@ public class VeterinarioDAO {
     }
 
     public List<Veterinario> listar() throws SQLException {
-        String sql = "SELECT id, nombre, password, especialidad FROM veterinarios";
+        String sql = "SELECT id, nombre, password, especialidad FROM veterinario";
         List<Veterinario> lista = new ArrayList<>();
         try (Connection cn = ConexionBD.obtenerConexion();
                 PreparedStatement ps = cn.prepareStatement(sql);
@@ -43,7 +43,7 @@ public class VeterinarioDAO {
     }
 
     public boolean actualizar(Veterinario v) throws SQLException {
-        String sql = "UPDATE veterinarios SET nombre = ?, password = ?, especialidad = ? WHERE id = ?";
+        String sql = "UPDATE veterinario SET nombre = ?, password = ?, especialidad = ? WHERE id = ?";
         try (Connection cn = ConexionBD.obtenerConexion();
                 PreparedStatement ps = cn.prepareStatement(sql)) {
             ps.setString(1, v.getNombre());
@@ -55,7 +55,7 @@ public class VeterinarioDAO {
     }
 
     public boolean eliminar(int id) throws SQLException {
-        String sql = "DELETE FROM veterinarios WHERE id = ?";
+        String sql = "DELETE FROM veterinario WHERE id = ?";
         try (Connection cn = ConexionBD.obtenerConexion();
                 PreparedStatement ps = cn.prepareStatement(sql)) {
             ps.setInt(1, id);

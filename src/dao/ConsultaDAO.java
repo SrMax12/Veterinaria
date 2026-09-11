@@ -8,7 +8,7 @@ import java.util.List;
 
 public class ConsultaDAO {
     public int guardar(Consulta c) throws SQLException {
-        String sql = "INSERT INTO consultas (procedimiento, fecha_hora) VALUES (?, ?)";
+        String sql = "INSERT INTO consulta (procedimiento, fecha_hora) VALUES (?, ?)";
         try (Connection cn = ConexionBD.obtenerConexion();
                 PreparedStatement ps = cn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, c.getProcedimiento());
@@ -25,7 +25,7 @@ public class ConsultaDAO {
     }
 
     public List<Consulta> listar() throws SQLException {
-        String sql = "SELECT id, procedimiento, fecha_hora FROM consultas";
+        String sql = "SELECT id, procedimiento, fecha_hora FROM consulta";
         List<Consulta> lista = new ArrayList<>();
         try (Connection cn = ConexionBD.obtenerConexion();
                 PreparedStatement ps = cn.prepareStatement(sql);
@@ -41,7 +41,7 @@ public class ConsultaDAO {
     }
 
     public boolean actualizar(Consulta c) throws SQLException {
-        String sql = "UPDATE consultas SET procedimiento = ?, fecha_hora = ? WHERE id = ?";
+        String sql = "UPDATE consulta SET procedimiento = ?, fecha_hora = ? WHERE id = ?";
         try (Connection cn = ConexionBD.obtenerConexion();
                 PreparedStatement ps = cn.prepareStatement(sql)) {
             ps.setString(1, c.getProcedimiento());
@@ -52,7 +52,7 @@ public class ConsultaDAO {
     }
 
     public boolean eliminar(int id) throws SQLException {
-        String sql = "DELETE FROM consultas WHERE id = ?";
+        String sql = "DELETE FROM consulta WHERE id = ?";
         try (Connection cn = ConexionBD.obtenerConexion();
                 PreparedStatement ps = cn.prepareStatement(sql)) {
             ps.setInt(1, id);

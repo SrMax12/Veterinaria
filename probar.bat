@@ -2,33 +2,26 @@
 cd /d "%~dp0"
 
 echo ============================================
-echo  Prueba de conexion con MySQL (XAMPP)
+echo  Lanzador Local: Dashboard Veterinaria (Casa)
 echo ============================================
 echo.
 
-echo [1/2] Compilando...
+echo [1/2] Compilando modulos de codigo fuente...
 if not exist bin mkdir bin
-javac -encoding UTF-8 -cp "Servidor\lib\mysql-connector-j-8.0.33.jar" -d bin ^
-  Dominio\App.java Dominio\Consulta.java Dominio\Dueño.java Dominio\Mascota.java Dominio\Vacuna.java Dominio\Veterinario.java ^
-  Servidor\conexion\ConexionBD.java Servidor\dao\ConsultaDAO.java Servidor\dao\DuenoDAO.java Servidor\dao\MascotaDAO.java Servidor\dao\VacunaDAO.java Servidor\dao\VeterinarioDAO.java ^
-  PruebaConexion.java
+
+:: Compilacion masiva limpia usando tu conector real dentro de la carpeta lib
+javac -encoding UTF-8 -cp "lib\mysql-connector-j-8.0.33.jar" -d bin src\dominio\*.java src\conexion\*.java src\dao\*.java src\forms\*.java src\App.java
 if errorlevel 1 goto error_compilar
 
-echo [2/2] Ejecutando...
+echo [2/2] Abriendo el Dashboard visual...
 echo.
-java -cp "bin;Servidor\lib\mysql-connector-j-8.0.33.jar" PruebaConexion
-echo.
-echo ============================================
-echo  Si ves los datos de los duenos: todo OK.
-echo  Si ves ERROR: revisa que MySQL este
-echo  iniciado en el panel de XAMPP.
-echo ============================================
+:: Lanzamos el sistema completo acoplando el Classpath nativo
+java -cp "bin;lib\mysql-connector-j-8.0.33.jar" App
 goto fin
 
 :error_compilar
 echo.
-echo ERROR: no se pudo compilar.
-echo Revisa que tengas instalado el JDK, con java y javac.
+echo ERROR: No se pudo compilar. Revisa la sintaxis en VS Code.
 echo.
 
 :fin

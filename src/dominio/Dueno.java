@@ -2,14 +2,14 @@ package dominio;
 
 import java.io.Serializable;
 
-public class Dueño implements Serializable {
+public class Dueno implements Serializable {
 	private int id;
 	private String nombre;
 	private String ci;
 	private String telefono;
 	private String email;
 
-	public Dueño(int id, String nombre, String ci, String telefono, String email) {
+	public Dueno(int id, String nombre, String ci, String telefono, String email) {
 		this.id = id;
 		this.nombre = nombre;
 		this.ci = ci;
