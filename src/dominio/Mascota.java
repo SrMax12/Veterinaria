@@ -10,8 +10,10 @@ public class Mascota implements Serializable {
     private String raza;
     private double peso;
     private String genero;
+    private int id_dueño; // FOREIGN KEY
 
-    public Mascota(int id, String nombre, int edad, String especie, String raza, double peso, String genero) {
+    public Mascota(int id, String nombre, int edad, String especie, String raza, double peso, String genero,
+            int id_dueño) {
         this.id = id;
         this.nombre = nombre;
         this.edad = edad;
@@ -19,6 +21,7 @@ public class Mascota implements Serializable {
         this.raza = raza;
         this.peso = peso;
         this.genero = genero;
+        this.id_dueño = id_dueño;
     }
 
     public int getId() {
@@ -75,5 +78,13 @@ public class Mascota implements Serializable {
 
     public void setGenero(String genero) {
         this.genero = genero;
+    }
+
+    public int getId_dueño() {
+        return id_dueño;
+    }
+
+    public void setId_dueño(int id_dueño) {
+        this.id_dueño = id_dueño;
     }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 
 public class MascotaDAO {
     public int guardar(Mascota m) throws SQLException {
-        String sql = "INSERT INTO mascota (nombre, edad, especie, raza, peso, genero) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO mascota (nombre, edad, especie, raza, peso, genero, id_dueño) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection cn = ConexionBD.obtenerConexion();
                 PreparedStatement ps = cn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, m.getNombre());
@@ -17,6 +17,7 @@ public class MascotaDAO {
             ps.setString(4, m.getRaza());
             ps.setDouble(5, m.getPeso());
             ps.setString(6, m.getGenero());
+            ps.setInt(7, m.getId_dueño());
             int filas = ps.executeUpdate();
             if (filas == 0)
                 return -1;
@@ -29,7 +30,7 @@ public class MascotaDAO {
     }
 
     public List<Mascota> listar() throws SQLException {
-        String sql = "SELECT id, nombre, edad, especie, raza, peso, genero FROM mascota";
+        String sql = "SELECT id, nombre, edad, especie, raza, peso, genero, id_dueño FROM mascota ORDER BY nombre";
         List<Mascota> lista = new ArrayList<>();
         try (Connection cn = ConexionBD.obtenerConexion();
                 PreparedStatement ps = cn.prepareStatement(sql);
@@ -42,14 +43,15 @@ public class MascotaDAO {
                         rs.getString("especie"),
                         rs.getString("raza"),
                         rs.getDouble("peso"),
-                        rs.getString("genero")));
+                        rs.getString("genero"),
+                        rs.getInt("id_dueño")));
             }
         }
         return lista;
     }
 
     public boolean actualizar(Mascota m) throws SQLException {
-        String sql = "UPDATE mascota SET nombre = ?, edad = ?, especie = ?, raza = ?, peso = ?, genero = ? WHERE id = ?";
+        String sql = "UPDATE mascota SET nombre = ?, edad = ?, especie = ?, raza = ?, peso = ?, genero = ?, id_dueño = ? WHERE id = ?";
         try (Connection cn = ConexionBD.obtenerConexion();
                 PreparedStatement ps = cn.prepareStatement(sql)) {
             ps.setString(1, m.getNombre());
@@ -58,7 +60,8 @@ public class MascotaDAO {
             ps.setString(4, m.getRaza());
             ps.setDouble(5, m.getPeso());
             ps.setString(6, m.getGenero());
-            ps.setInt(7, m.getId());
+            ps.setInt(7, m.getId_dueño());
+            ps.setInt(8, m.getId());
             return ps.executeUpdate() > 0;
         }
     }

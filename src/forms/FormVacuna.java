@@ -1,9 +1,12 @@
 package forms;
 
-import dao.VacunaDAO;
+import dominio.Consulta;
+import dominio.GestionConsulta;
+import dominio.GestionMascota;
+import dominio.GestionVacuna;
+import dominio.Mascota;
 import dominio.Vacuna;
 import java.awt.*;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -16,59 +19,101 @@ public class FormVacuna extends JPanel {
     private JTable tablaVacunas;
     private DefaultTableModel modeloTabla;
     private JScrollPane scrollTabla;
-    
+
     private JTextField txtTipo, txtFechaHora, txtVencimiento, txtIdEliminar;
+    private JComboBox<Mascota> comboMascotas;
+    private JComboBox<Consulta> comboConsultas;
     private JButton btnGuardar, btnEliminar, btnLimpiar;
-    private VacunaDAO vacunaDAO;
+
+    private GestionVacuna gestionVacuna;
+    private GestionMascota gestionMascota;
+    private GestionConsulta gestionConsulta;
     private DateTimeFormatter fmtFechaHora = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private DateTimeFormatter fmtFechaSola = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public FormVacuna() {
-        vacunaDAO = new VacunaDAO();
+        gestionVacuna = new GestionVacuna();
+        gestionMascota = new GestionMascota();
+        gestionConsulta = new GestionConsulta();
+
         this.setLayout(new BorderLayout(10, 10));
         this.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
         inicializarComponentes();
+        cargarCombos();
         organizarDiseño();
         configurarAcciones();
         cargarDatos();
     }
 
     private void inicializarComponentes() {
-        String[] columnas = {"ID", "Componente / Tipo", "Fecha Aplicación", "Vencimiento"};
+        String[] columnas = { "ID", "Vacuna", "Fecha Aplicación", "Vencimiento", "ID Mascota", "ID Consulta" };
         modeloTabla = new DefaultTableModel(columnas, 0) {
             @Override
-            public boolean isCellEditable(int row, int column) { return false; }
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
         };
         tablaVacunas = new JTable(modeloTabla);
         scrollTabla = new JScrollPane(tablaVacunas);
 
-        txtTipo = new JTextField(12);
+        txtTipo = new JTextField(10);
         txtFechaHora = new JTextField(LocalDateTime.now().format(fmtFechaHora), 12);
         txtVencimiento = new JTextField(LocalDate.now().plusYears(1).format(fmtFechaSola), 10);
         txtIdEliminar = new JTextField(5);
+        comboMascotas = new JComboBox<>();
+        comboConsultas = new JComboBox<>();
 
         btnGuardar = new JButton("Registrar Vacuna");
         btnEliminar = new JButton("Eliminar");
         btnLimpiar = new JButton("Limpiar");
     }
 
+    private void cargarCombos() {
+        comboMascotas.removeAllItems();
+        for (Mascota m : gestionMascota.listar())
+            comboMascotas.addItem(m);
+
+        comboConsultas.removeAllItems();
+        for (Consulta c : gestionConsulta.listar())
+            comboConsultas.addItem(c);
+    }
+
     private void organizarDiseño() {
         JPanel panelSuperior = new JPanel(new GridBagLayout());
-        panelSuperior.setBorder(BorderFactory.createTitledBorder("Panel de Control - Inmunizaciones (Vacunas)"));
+        panelSuperior.setBorder(BorderFactory.createTitledBorder("Panel de Control - Vacunas"));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(6, 6, 6, 6);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // Fila horizontal de campos
-        gbc.gridx = 0; gbc.gridy = 0; panelSuperior.add(new JLabel("Vacuna / Tipo:"), gbc);
-        gbc.gridx = 1; panelSuperior.add(txtTipo, gbc);
-        gbc.gridx = 2; panelSuperior.add(new JLabel("Aplicación (AAAA-MM-DD HH:MM):"), gbc);
-        gbc.gridx = 3; panelSuperior.add(txtFechaHora, gbc);
-        gbc.gridx = 4; panelSuperior.add(new JLabel("Vence (AAAA-MM-DD):"), gbc);
-        gbc.gridx = 5; panelSuperior.add(txtVencimiento, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        panelSuperior.add(new JLabel("Tipo Vacuna:"), gbc);
+        gbc.gridx = 1;
+        panelSuperior.add(txtTipo, gbc);
+        gbc.gridx = 2;
+        panelSuperior.add(new JLabel("Aplicación:"), gbc);
+        gbc.gridx = 3;
+        panelSuperior.add(txtFechaHora, gbc);
+        gbc.gridx = 4;
+        panelSuperior.add(new JLabel("Vencimiento:"), gbc);
+        gbc.gridx = 5;
+        panelSuperior.add(txtVencimiento, gbc);
 
-        // Barra inferior de botones
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        panelSuperior.add(new JLabel("Mascota:"), gbc);
+        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+        panelSuperior.add(comboMascotas, gbc);
+        gbc.gridx = 3;
+        gbc.gridwidth = 1;
+        panelSuperior.add(new JLabel("Asociar Consulta:"), gbc);
+        gbc.gridx = 4;
+        gbc.gridwidth = 2;
+        panelSuperior.add(comboConsultas, gbc);
+
         JPanel panelAcciones = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         panelAcciones.add(btnGuardar);
         panelAcciones.add(btnLimpiar);
@@ -77,7 +122,9 @@ public class FormVacuna extends JPanel {
         panelAcciones.add(txtIdEliminar);
         panelAcciones.add(btnEliminar);
 
-        gbc.gridx = 0; gbc.gridy = 1; gbc.gridwidth = 6;
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 6;
         gbc.insets = new Insets(12, 6, 6, 6);
         panelSuperior.add(panelAcciones, gbc);
 
@@ -87,8 +134,10 @@ public class FormVacuna extends JPanel {
 
     private void configurarAcciones() {
         btnGuardar.addActionListener(e -> {
-            if (txtTipo.getText().trim().isEmpty() || txtFechaHora.getText().trim().isEmpty() || txtVencimiento.getText().trim().isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Por favor complete todos los campos obligatorios.", "Campos Vacíos", JOptionPane.WARNING_MESSAGE);
+            if (txtTipo.getText().trim().isEmpty() || comboMascotas.getSelectedItem() == null
+                    || comboConsultas.getSelectedItem() == null) {
+                JOptionPane.showMessageDialog(this, "Complete todos los campos.", "Advertencia",
+                        JOptionPane.WARNING_MESSAGE);
                 return;
             }
             try {
@@ -96,41 +145,33 @@ public class FormVacuna extends JPanel {
                 LocalDateTime fechaHora = LocalDateTime.parse(txtFechaHora.getText().trim(), fmtFechaHora);
                 LocalDate vencimiento = LocalDate.parse(txtVencimiento.getText().trim(), fmtFechaSola);
 
-                Vacuna v = new Vacuna(0, tipo, fechaHora, vencimiento);
-                vacunaDAO.guardar(v);
-                JOptionPane.showMessageDialog(this, "¡Vacuna registrada con éxito!", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                limpiarCampos();
-                cargarDatos();
+                Mascota m = (Mascota) comboMascotas.getSelectedItem();
+                Consulta c = (Consulta) comboConsultas.getSelectedItem();
+
+                Vacuna v = new Vacuna(0, tipo, fechaHora, vencimiento, m.getId(), c.getId());
+                int resultadoId = gestionVacuna.guardar(v);
+                if (resultadoId != -1) {
+                    JOptionPane.showMessageDialog(this, "¡Vacuna registrada con ID " + resultadoId + "!");
+                    limpiarCampos();
+                    cargarDatos();
+                }
             } catch (DateTimeParseException ex) {
-                JOptionPane.showMessageDialog(this, "Formato de fecha u hora incorrecto.\nAplicación: AAAA-MM-DD HH:MM\nVencimiento: AAAA-MM-DD", "Error de Formato", JOptionPane.ERROR_MESSAGE);
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(this, "Error de comunicación con MySQL: " + ex.getMessage(), "Error SQL", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Error de formato de fecha.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
         btnEliminar.addActionListener(e -> {
-            if (txtIdEliminar.getText().trim().isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Escriba el ID del registro que desea eliminar.", "Campo Vacío", JOptionPane.WARNING_MESSAGE);
+            if (txtIdEliminar.getText().trim().isEmpty())
                 return;
-            }
             try {
                 int id = Integer.parseInt(txtIdEliminar.getText().trim());
-                int respuesta = JOptionPane.showConfirmDialog(this, "¿Seguro que desea eliminar de forma permanente la vacuna con ID " + id + "?", "Confirmar eliminación", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-                
-                if (respuesta == JOptionPane.YES_OPTION) {
-                    boolean borrado = vacunaDAO.eliminar(id);
-                    if (borrado) {
-                        JOptionPane.showMessageDialog(this, "Registro de vacuna eliminado.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                        txtIdEliminar.setText("");
-                        cargarDatos();
-                    } else {
-                        JOptionPane.showMessageDialog(this, "No se encontró ningún registro con ese ID.", "No Encontrado", JOptionPane.WARNING_MESSAGE);
-                    }
+                if (gestionVacuna.eliminar(id)) {
+                    JOptionPane.showMessageDialog(this, "Vacuna eliminada.");
+                    txtIdEliminar.setText("");
+                    cargarDatos();
                 }
             } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "El ID de eliminación debe ser un número entero válido.", "Error de Formato", JOptionPane.ERROR_MESSAGE);
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(this, "Fallo al procesar la baja en MySQL: " + ex.getMessage(), "Error SQL", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "ID inválido.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -138,20 +179,12 @@ public class FormVacuna extends JPanel {
     }
 
     private void cargarDatos() {
-        try {
-            modeloTabla.setRowCount(0);
-            List<Vacuna> lista = vacunaDAO.listar();
-            for (Vacuna v : lista) {
-                Object[] fila = {
-                    v.getId(), 
-                    v.getTipo(), 
-                    v.getFechaHora().format(fmtFechaHora), 
-                    v.getVencimiento().format(fmtFechaSola)
-                };
-                modeloTabla.addRow(fila);
-            }
-        } catch (SQLException ex) {
-            System.err.println("Error automático al refrescar JTable de vacunas: " + ex.getMessage());
+        modeloTabla.setRowCount(0);
+        List<Vacuna> lista = gestionVacuna.listar();
+        for (Vacuna v : lista) {
+            Object[] fila = { v.getId(), v.getTipo(), v.getFechaHora().format(fmtFechaHora),
+                    v.getVencimiento().format(fmtFechaSola), v.getId_mascota(), v.getId_consulta() };
+            modeloTabla.addRow(fila);
         }
     }
 
